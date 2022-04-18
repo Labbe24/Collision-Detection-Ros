@@ -1,0 +1,4 @@
+sensor_msgs/JointState start_state
+sensor_msgs/JointState end_state
+---
+trajectory_msgs/JointTrajectory res

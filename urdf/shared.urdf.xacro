@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="multi-robot-setup-urdf">
+<link name="world"/>
+<xacro:arg name="multi_setup" default="true"/>
+
+<xacro:include filename="$(find ur_description)/urdf/ur.urdf.xacro"/>
+
+<xacro:include filename="$(find lbr_description)/urdf/iiwa7/iiwa7.urdf.xacro"/>
+
+</robot>

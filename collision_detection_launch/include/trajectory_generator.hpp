@@ -4,7 +4,7 @@
 #include "std_srvs/srv/empty.hpp"
 #include <collision_detection_msgs/srv/generate_trajectory.hpp>
 #include <functional>
-
+#include <moveit/move_group_interface/move_group_interface.h>
 class TrajectoryGenerator : public rclcpp::Node{
     public:
     TrajectoryGenerator();

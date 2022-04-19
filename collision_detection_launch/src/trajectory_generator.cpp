@@ -2,7 +2,6 @@
 #include <moveit/robot_model_loader/robot_model_loader.h>
 #include <moveit/robot_model/robot_model.h>
 #include <moveit/robot_state/robot_state.h>
-#include <moveit/move_group_interface/move_group_interface.h>
 TrajectoryGenerator::TrajectoryGenerator()
     : Node("trajectory_generator")
     {
@@ -35,16 +34,21 @@ void TrajectoryGenerator::generate_trajectory(const std::shared_ptr<collision_de
         
         auto move_group = setupMoveGroup("ur_manipulator");
         //setStartState
-        
+        RCLCPP_INFO(rclcpp::get_logger("trajectory_generator"), "Hi1!");
         moveit_msgs::msg::RobotState start_state;
+        RCLCPP_INFO(rclcpp::get_logger("trajectory_generator"),"Hi2!");
         start_state.set__joint_state(request->start_state);
+        RCLCPP_INFO(rclcpp::get_logger("trajectory_generator"), "Hi3!");
         move_group.setStartState(start_state);
 
+        RCLCPP_INFO(rclcpp::get_logger("trajectory_generator"), "Hi4!");
         //setGoalState
         move_group.setJointValueTarget(request->end_state);
-
+        RCLCPP_INFO(rclcpp::get_logger("trajectory_generator"), "Hi5!");
             moveit::planning_interface::MoveGroupInterface::Plan robert_plant;
         //plan
         move_group.plan(robert_plant);
+                RCLCPP_INFO(rclcpp::get_logger("trajectory_generator"), "Hi6!");
         response->set__res(robert_plant.trajectory_.joint_trajectory);
+                RCLCPP_INFO(rclcpp::get_logger("trajectory_generator"), "Hi7!");
 }

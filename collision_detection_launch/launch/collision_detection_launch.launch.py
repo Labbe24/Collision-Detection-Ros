@@ -39,7 +39,7 @@ def generate_launch_description():
                             'description_file':"shared.urdf.xacro",
                             'multi_setup':"true"
     }
-    arguments_for_ur_moveit={'ur_type':'ur5e', 'robot_ip':robot_ip, 'launch_rviz':'true','use_fake_hardware':use_fake_hardware}
+    arguments_for_ur_moveit={'ur_type':ur_type, 'robot_ip':robot_ip, 'launch_rviz':'false','use_fake_hardware':use_fake_hardware}
     ur_driver_bringup_dir = get_package_share_directory("ur_bringup")
     collision_detection_launch_dir = get_package_share_directory("collision_detection_launch")
     ur_description_file = "ur.urdf.xacro"
@@ -56,7 +56,7 @@ def generate_launch_description():
     )
     trajectory_generator_ur = IncludeLaunchDescription(
                 launch_description_source= PythonLaunchDescriptionSource(collision_detection_launch_dir+'/launch/trajectory_generator_ur.launch.py'),
-                launch_arguments=arguments_for_ur_launch.items()
+                launch_arguments=arguments_for_ur_moveit.items()
             )
     joint_publisher_ur = Node(
         package='collision_detection',
@@ -104,5 +104,5 @@ def generate_launch_description():
         joint_publisher_ur,
         trajectory_generator_ur,
         # joint_publisher_kuka,
-        # unity_tcp_endpoint
+        unity_tcp_endpoint
     ])

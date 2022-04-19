@@ -14,44 +14,37 @@ TrajectoryGenerator::TrajectoryGenerator()
     }
 
 
-void TrajectoryGenerator::generate_trajectory(const std::shared_ptr<collision_detection_msgs::srv::GenerateTrajectory::Request> request,
-    std::shared_ptr<collision_detection_msgs::srv::GenerateTrajectory::Response>      response)
-{
-    response->res.joint_names.push_back("Magnus");
-    response->res.joint_names.push_back("Er");
-    response->res.joint_names.push_back("En");
-    response->res.joint_names.push_back("Bot");
-    std::string str = "Incoming request\nfront: "+
-        request->start_state.name.front()+ "\nend: "+request->end_state.name.front();
-    RCLCPP_INFO(rclcpp::get_logger("trajectory_generator"), str.c_str());
-}
-void TrajectoryGenerator::setupMoveGroup(std::string planning_group)
-{
-    // Setup
-  // ^^^^^
-  //
-  // MoveIt operates on sets of joints called "planning groups" and stores them in an object called
-  // the ``JointModelGroup``. Throughout MoveIt, the terms "planning group" and "joint model group"
-  // are used interchangeably.
-
-  // The
-  // :moveit_codedir:`MoveGroupInterface<moveit_ros/planning_interface/move_group_interface/include/moveit/move_group_interface/move_group_interface.h>`
-  // class can be easily set up using just the name of the planning group you would like to control and plan for.
-  moveit::planning_interface::MoveGroupInterface move_group(shared_from_this(), planning_group);
-
-  // We will use the
-  // :moveit_codedir:`PlanningSceneInterface<moveit_ros/planning_interface/planning_scene_interface/include/moveit/planning_scene_interface/planning_scene_interface.h>`
-  // class to add and remove collision objects in our "virtual world" scene
-//   moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
-
-  // Raw pointers are frequently used to refer to the planning group for improved performance.
-  const moveit::core::JointModelGroup* joint_model_group =
-      move_group.getCurrentState()->getJointModelGroup(planning_group);
-
-}
-
-
-// trajectory_msgs::JointTrajectory TrajectoryGenerator::generateTrajectory(const JointState& start, const JointState& end){
-//     trajectory_msgs::JointTrajectory traj();
-//     return traj;
+// void TrajectoryGenerator::generate_trajectory(const std::shared_ptr<collision_detection_msgs::srv::GenerateTrajectory::Request> request,
+//     std::shared_ptr<collision_detection_msgs::srv::GenerateTrajectory::Response>      response)
+// {
+//     response->res.joint_names.push_back("Magnus");
+//     response->res.joint_names.push_back("Er");
+//     response->res.joint_names.push_back("En");
+//     response->res.joint_names.push_back("Bot");
+//     std::string str = "Incoming request\nfront: "+
+//         request->start_state.name.front()+ "\nend: "+request->end_state.name.front();
+//     RCLCPP_INFO(rclcpp::get_logger("trajectory_generator"), str.c_str());
 // }
+moveit::planning_interface::MoveGroupInterface TrajectoryGenerator::setupMoveGroup(std::string planning_group)
+{
+  return moveit::planning_interface::MoveGroupInterface(shared_from_this(), planning_group);
+}
+
+void TrajectoryGenerator::generate_trajectory(const std::shared_ptr<collision_detection_msgs::srv::GenerateTrajectory::Request> request,
+        std::shared_ptr<collision_detection_msgs::srv::GenerateTrajectory::Response>      response){
+        
+        auto move_group = setupMoveGroup("ur_manipulator");
+        //setStartState
+        
+        moveit_msgs::msg::RobotState start_state;
+        start_state.set__joint_state(request->start_state);
+        move_group.setStartState(start_state);
+
+        //setGoalState
+        move_group.setJointValueTarget(request->end_state);
+
+            moveit::planning_interface::MoveGroupInterface::Plan robert_plant;
+        //plan
+        move_group.plan(robert_plant);
+        response->set__res(robert_plant.trajectory_.joint_trajectory);
+}

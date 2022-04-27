@@ -33,10 +33,10 @@ def launch_setup(context, *args, **kwargs):
     safety_pos_margin = LaunchConfiguration("safety_pos_margin")
     safety_k_position = LaunchConfiguration("safety_k_position")
     # General arguments
-    description_package = LaunchConfiguration("description_package")
-    description_file = LaunchConfiguration("description_file")
-    moveit_config_package = LaunchConfiguration("moveit_config_package")
-    moveit_config_file = LaunchConfiguration("moveit_config_file")
+    description_package_ur = LaunchConfiguration("description_package")
+    description_file_ur = LaunchConfiguration("description_file")
+    moveit_config_package_ur = LaunchConfiguration("moveit_config_package")
+    moveit_config_file_ur = LaunchConfiguration("moveit_config_file")
     prefix = LaunchConfiguration("prefix")
     use_fake_hardware = LaunchConfiguration("use_fake_hardware")
     fake_sensor_commands = LaunchConfiguration("fake_sensor_commands")
@@ -44,16 +44,16 @@ def launch_setup(context, *args, **kwargs):
     headless_mode = LaunchConfiguration("headless_mode")
 
     joint_limit_params = PathJoinSubstitution(
-        [FindPackageShare(description_package), "config", ur_type, "joint_limits.yaml"]
+        [FindPackageShare(description_package_ur), "config", "joint_limits.yaml"]
     )
     kinematics_params = PathJoinSubstitution(
-        [FindPackageShare(description_package), "config", ur_type, "default_kinematics.yaml"]
+        [FindPackageShare(description_package_ur), "config", "default_kinematics.yaml"]
     )
     physical_params = PathJoinSubstitution(
-        [FindPackageShare(description_package), "config", ur_type, "physical_parameters.yaml"]
+        [FindPackageShare(description_package_ur), "config","physical_parameters.yaml"]
     )
     visual_params = PathJoinSubstitution(
-        [FindPackageShare(description_package), "config", ur_type, "visual_parameters.yaml"]
+        [FindPackageShare(description_package_ur), "config","visual_parameters.yaml"]
     )
     script_filename = PathJoinSubstitution(
         [FindPackageShare("ur_robot_driver"), "resources", "ros_control.urscript"]
@@ -69,7 +69,7 @@ def launch_setup(context, *args, **kwargs):
         [
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
-            PathJoinSubstitution([FindPackageShare(description_package), "urdf", description_file]),
+            PathJoinSubstitution([FindPackageShare(description_package_ur), "urdf", description_file_ur]),
             " ",
             "robot_ip:=",
             robot_ip,
@@ -123,7 +123,7 @@ def launch_setup(context, *args, **kwargs):
             " ",
         ]
     )
-    robot_description = {"robot_description": robot_description_content}
+    robot_description_ur = {"robot_description": robot_description_content}
 
     # MoveIt Configuration
     robot_description_semantic_content = Command(
@@ -131,7 +131,7 @@ def launch_setup(context, *args, **kwargs):
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             PathJoinSubstitution(
-                [FindPackageShare(moveit_config_package), "srdf", moveit_config_file]
+                [FindPackageShare(moveit_config_package_ur), "config","srdf", moveit_config_file_ur]
             ),
             " ",
             "name:=",
@@ -144,17 +144,17 @@ def launch_setup(context, *args, **kwargs):
             " ",
         ]
     )
-    robot_description_semantic = {"robot_description_semantic": robot_description_semantic_content}
+    robot_description_semantic_ur = {"robot_description_semantic": robot_description_semantic_content}
 
-    kinematics_yaml = load_yaml("ur_moveit_config", "config/kinematics.yaml")
-    robot_description_kinematics = {"robot_description_kinematics": kinematics_yaml}
+    kinematics_yaml_ur = load_yaml("collision_detection_launch", "config/kinematics.yaml")
+    robot_description_kinematics_ur = {"robot_description_kinematics": kinematics_yaml_ur}
 
-    robot_description_planning = {
+    robot_description_planning_ur = {
         "robot_description_planning": load_yaml_abs(str(joint_limit_params.perform(context)))
     }
 
     # Planning Configuration
-    ompl_planning_pipeline_config = {
+    ompl_planning_pipeline_config_ur = {
         "move_group": {
             "name": "my_group_lol",
             "planning_plugin": "ompl_interface/OMPLPlanner",
@@ -162,45 +162,56 @@ def launch_setup(context, *args, **kwargs):
             "start_state_max_bounds_error": 0.1,
         }
     }
-    ompl_planning_yaml = load_yaml("ur_moveit_config", "config/ompl_planning.yaml")
-    ompl_planning_pipeline_config["move_group"].update(ompl_planning_yaml)
+    
+    ompl_planning_yaml_ur = load_yaml("collision_detection_launch", "config/ompl_planning.yaml")
+    ompl_planning_pipeline_config_ur["move_group"].update(ompl_planning_yaml_ur)
 
     # Trajectory Execution Configuration
-    controllers_yaml = load_yaml("ur_moveit_config", "config/controllers.yaml")
-    moveit_controllers = {
-        "moveit_simple_controller_manager": controllers_yaml,
+    controllers_yaml_ur = load_yaml("collision_detection_launch", "config/controllers.yaml")
+    moveit_controllers_ur = {
+        "moveit_simple_controller_manager": controllers_yaml_ur,
         "moveit_controller_manager": "moveit_simple_controller_manager/MoveItSimpleControllerManager",
     }
 
-    trajectory_execution = {
+    trajectory_execution_ur = {
         "moveit_manage_controllers": False,
         "trajectory_execution.allowed_execution_duration_scaling": 1.2,
         "trajectory_execution.allowed_goal_duration_margin": 0.5,
         "trajectory_execution.allowed_start_tolerance": 0.01,
     }
 
-    planning_scene_monitor_parameters = {
+    planning_scene_monitor_parameters_ur = {
         "publish_planning_scene": True,
         "publish_geometry_updates": True,
         "publish_state_updates": True,
         "publish_transforms_updates": True,
     }
+
+    print(robot_description_ur,
+            robot_description_semantic_ur,
+            robot_description_kinematics_ur,
+            robot_description_planning_ur,
+            ompl_planning_pipeline_config_ur,
+            trajectory_execution_ur,
+            moveit_controllers_ur,
+            planning_scene_monitor_parameters_ur)
         # Start the actual move_group node/action server
     move_group_node = Node(
         package="moveit_ros_move_group",
         executable="move_group",
         output="screen",
         parameters=[
-            robot_description,
-            robot_description_semantic,
-            robot_description_kinematics,
-            robot_description_planning,
-            ompl_planning_pipeline_config,
-            trajectory_execution,
-            moveit_controllers,
-            planning_scene_monitor_parameters,
+            robot_description_ur,
+            robot_description_semantic_ur,
+            robot_description_kinematics_ur,
+            robot_description_planning_ur,
+            ompl_planning_pipeline_config_ur,
+            trajectory_execution_ur,
+            moveit_controllers_ur,
+            planning_scene_monitor_parameters_ur,
         ],
     )
+    
 
     # Start the actual move_group node/action server
     trajectory_generator_node = Node(
@@ -208,15 +219,16 @@ def launch_setup(context, *args, **kwargs):
         executable="trajectory_generator_node",
         output="screen",
         parameters=[
-            robot_description,
-            robot_description_semantic,
-            robot_description_kinematics,
-            robot_description_planning,
-            ompl_planning_pipeline_config,
-            trajectory_execution,
-            moveit_controllers,
-            planning_scene_monitor_parameters,
+            robot_description_ur,
+            robot_description_semantic_ur,
+            robot_description_kinematics_ur,
+            robot_description_planning_ur,
+            ompl_planning_pipeline_config_ur,
+            trajectory_execution_ur,
+            moveit_controllers_ur,
+            planning_scene_monitor_parameters_ur,
         ],
+        # arguments=['--ros-args','--log-level','debug']
     )
 
     # Static TF
@@ -229,16 +241,16 @@ def launch_setup(context, *args, **kwargs):
     )
 
     # Servo node for realtime control
-    servo_yaml = load_yaml("ur_moveit_config", "config/ur_servo.yaml")
-    servo_params = {"moveit_servo": servo_yaml}
-    servo_node = Node(
+    servo_yaml_ur = load_yaml("collision_detection_launch", "config/ur_servo.yaml")
+    servo_params_ur = {"moveit_servo": servo_yaml_ur}
+    servo_node_ur = Node(
         package="moveit_servo",
         condition=IfCondition(launch_servo),
         executable="servo_node_main",
         parameters=[
-            servo_params,
-            robot_description,
-            robot_description_semantic,
+            servo_params_ur,
+            robot_description_ur,
+            robot_description_semantic_ur,
         ],
         output={
             "stdout": "screen",
@@ -246,7 +258,7 @@ def launch_setup(context, *args, **kwargs):
         },
     )
 
-    nodes_to_start = [move_group_node, static_tf, servo_node,trajectory_generator_node]
+    nodes_to_start = [static_tf,move_group_node,trajectory_generator_node]
 
     return nodes_to_start
 
@@ -292,7 +304,7 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "description_package",
-            default_value="ur_description",
+            default_value="collision_detection_launch",
             description="Description package with robot URDF/XACRO files. Usually the argument \
         is not set, it enables use of a custom description.",
         )
@@ -300,14 +312,14 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "description_file",
-            default_value="ur.urdf.xacro",
+            default_value="shared.urdf.xacro",
             description="URDF/XACRO description file with the robot.",
         )
     )
     declared_arguments.append(
         DeclareLaunchArgument(
             "moveit_config_package",
-            default_value="ur_moveit_config",
+            default_value="collision_detection_launch",
             description="MoveIt config package with robot SRDF/XACRO files. Usually the argument \
         is not set, it enables use of a custom moveit config.",
         )
@@ -315,7 +327,7 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "moveit_config_file",
-            default_value="ur.srdf.xacro",
+            default_value="shared.srdf.xacro",
             description="MoveIt SRDF/XACRO description file with the robot.",
         )
     )

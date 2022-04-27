@@ -26,29 +26,34 @@ TrajectoryGenerator::TrajectoryGenerator()
 // }
 moveit::planning_interface::MoveGroupInterface TrajectoryGenerator::setupMoveGroup(std::string planning_group)
 {
-  return moveit::planning_interface::MoveGroupInterface(shared_from_this(), planning_group);
+    RCLCPP_INFO(rclcpp::get_logger("trajectory_generator"), "trying!");
+  auto ret = moveit::planning_interface::MoveGroupInterface(shared_from_this(), planning_group);
+  RCLCPP_INFO(rclcpp::get_logger("trajectory_generator"), "Success!");
+  return ret;
 }
+
+// void printTrajectory(const trajectory_msgs::msg::JointTrajectory& traj){
+//     RCLCPP_INFO(rclcpp::get_logger("trajectory_generator"), "Printing trajectory names:");
+//     auto names = std::accumulate(traj.joint_names.begin(),traj.joint_names.end(),"",[](std::string acc, std::string name ){
+//         return acc+"-"+name;
+//     });
+//     RCLCPP_INFO(rclcpp::get_logger("trajectory_generator"), names.c_str());
+// }
 
 void TrajectoryGenerator::generate_trajectory(const std::shared_ptr<collision_detection_msgs::srv::GenerateTrajectory::Request> request,
         std::shared_ptr<collision_detection_msgs::srv::GenerateTrajectory::Response>      response){
-        
-        auto move_group = setupMoveGroup("ur_manipulator");
+        auto move_group = setupMoveGroup(request->move_group);
         //setStartState
-        RCLCPP_INFO(rclcpp::get_logger("trajectory_generator"), "Hi1!");
         moveit_msgs::msg::RobotState start_state;
-        RCLCPP_INFO(rclcpp::get_logger("trajectory_generator"),"Hi2!");
         start_state.set__joint_state(request->start_state);
-        RCLCPP_INFO(rclcpp::get_logger("trajectory_generator"), "Hi3!");
         move_group.setStartState(start_state);
 
-        RCLCPP_INFO(rclcpp::get_logger("trajectory_generator"), "Hi4!");
         //setGoalState
         move_group.setJointValueTarget(request->end_state);
-        RCLCPP_INFO(rclcpp::get_logger("trajectory_generator"), "Hi5!");
-            moveit::planning_interface::MoveGroupInterface::Plan robert_plant;
+        moveit::planning_interface::MoveGroupInterface::Plan robert_plant;
         //plan
         move_group.plan(robert_plant);
-                RCLCPP_INFO(rclcpp::get_logger("trajectory_generator"), "Hi6!");
+        // printTrajectory(robert_plant.trajectory_.joint_trajectory);
+        RCLCPP_INFO_STREAM(get_logger(), "joint trajectory:" << rosidl_generator_traits::to_yaml(robert_plant.trajectory_.joint_trajectory));
         response->set__res(robert_plant.trajectory_.joint_trajectory);
-                RCLCPP_INFO(rclcpp::get_logger("trajectory_generator"), "Hi7!");
 }

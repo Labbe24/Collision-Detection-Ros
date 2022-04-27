@@ -1,3 +1,4 @@
+string move_group
 sensor_msgs/JointState start_state
 sensor_msgs/JointState end_state
 ---

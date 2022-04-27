@@ -1,0 +1,27 @@
+controller_names:
+  - joint_trajectory_controller
+  - position_trajectory_controller
+joint_trajectory_controller:
+  action_ns: follow_joint_trajectory
+  type: FollowJointTrajectory
+  default: true
+  joints:
+    - shoulder_pan_joint
+    - shoulder_lift_joint
+    - elbow_joint
+    - wrist_1_joint
+    - wrist_2_joint
+    - wrist_3_joint
+# http://control.ros.org/ros2_controllers/joint_trajectory_controller/doc/userdoc.html#ros2-interface-of-the-controller
+position_trajectory_controller:
+  action_ns: follow_joint_trajectory
+  type: FollowJointTrajectory
+  default: true
+  joints:
+    - lbr_joint_0
+    - lbr_joint_1
+    - lbr_joint_2
+    - lbr_joint_3
+    - lbr_joint_4
+    - lbr_joint_5
+    - lbr_joint_6

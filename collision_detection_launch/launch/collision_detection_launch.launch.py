@@ -101,7 +101,7 @@ def generate_launch_description():
     return launch.LaunchDescription([
         ur_nodes,
         kuka_joint_trajectory_controller,
-        joint_publisher_ur,
+        # joint_publisher_ur,
         trajectory_generator_ur,
         # joint_publisher_kuka,
         unity_tcp_endpoint

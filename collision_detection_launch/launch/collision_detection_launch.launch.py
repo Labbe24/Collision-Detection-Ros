@@ -26,7 +26,7 @@ def generate_launch_description():
     ur_type='ur5e'
     robot_ip = '127.0.0.1'
     ur_description_package="ur_description"
-    use_fake_hardware='false'
+    use_fake_hardware='true'
     controllers_file="controllers.yml"
     arguments_for_ur_launch={'ur_type':ur_type,
                             'robot_ip':robot_ip,

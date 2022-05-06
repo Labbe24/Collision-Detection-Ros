@@ -18,7 +18,7 @@ class TrajectoryGenerator : public rclcpp::Node{
   private:
     moveit::planning_interface::MoveGroupInterface setupMoveGroup(std::string);
     rclcpp::Service<collision_detection_msgs::srv::GenerateTrajectory>::SharedPtr service_;
-     rclcpp::Service<std_srvs::srv::Empty>::SharedPtr service1_;
+    rclcpp::Service<collision_detection_msgs::srv::GenerateTrajectory>::SharedPtr service1_;
 
 
 };

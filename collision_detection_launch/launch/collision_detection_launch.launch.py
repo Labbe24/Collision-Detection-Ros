@@ -22,10 +22,8 @@ def generate_launch_description():
 
 
     # ur setup:
-    ur_ns = 'ur_ns'
     ur_type='ur5e'
     robot_ip = '127.0.0.1'
-    ur_description_package="ur_description"
     use_fake_hardware='true'
     controllers_file="controllers.yml"
     arguments_for_ur_launch={'ur_type':ur_type,
@@ -42,7 +40,6 @@ def generate_launch_description():
     arguments_for_ur_moveit={'ur_type':ur_type, 'robot_ip':robot_ip, 'launch_rviz':'false','use_fake_hardware':use_fake_hardware}
     ur_driver_bringup_dir = get_package_share_directory("ur_bringup")
     collision_detection_launch_dir = get_package_share_directory("collision_detection_launch")
-    ur_description_file = "ur.urdf.xacro"
 
 
     ur_nodes = GroupAction(
@@ -58,32 +55,8 @@ def generate_launch_description():
                 launch_description_source= PythonLaunchDescriptionSource(collision_detection_launch_dir+'/launch/trajectory_generator_ur.launch.py'),
                 launch_arguments=arguments_for_ur_moveit.items()
             )
-    joint_publisher_ur = Node(
-        package='collision_detection',
-        executable='joint_publisher',
-        name='my_joint_publisher',
-        namespace=ur_ns
-    )
 
     # kuka setup:
-    kuka_ns = 'kuka_ns'
-    arguments_for_kuka_launch={'model':'iiwa7', 'sim':'true'}
-    kuka_driver_bringup_dir = get_package_share_directory("lbr_bringup")
-    kuka_nodes = GroupAction(
-        actions=[
-            PushRosNamespace(kuka_ns),
-            IncludeLaunchDescription(
-                launch_description_source= PythonLaunchDescriptionSource(kuka_driver_bringup_dir+'/launch/lbr_bringup.launch.py'),
-                launch_arguments=arguments_for_kuka_launch.items()
-            )
-        ]
-    )
-    joint_publisher_kuka = Node(
-        package='collision_detection',
-        executable='joint_publisher',
-        name='my_joint_publisher',
-        namespace=kuka_ns
-    )
     kuka_joint_trajectory_controller = Node(
         package="controller_manager",
         executable="spawner",

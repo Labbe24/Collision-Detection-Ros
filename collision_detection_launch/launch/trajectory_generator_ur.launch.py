@@ -17,7 +17,6 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.actions import OpaqueFunction
-from launch.conditions import IfCondition
 from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
@@ -27,7 +26,6 @@ from ur_bringup.launch_common import load_yaml, load_yaml_abs
 def launch_setup(context, *args, **kwargs):
 
     # Initialize Arguments
-    ur_type = LaunchConfiguration("ur_type")
     robot_ip = LaunchConfiguration("robot_ip")
     safety_limits = LaunchConfiguration("safety_limits")
     safety_pos_margin = LaunchConfiguration("safety_pos_margin")
@@ -40,7 +38,6 @@ def launch_setup(context, *args, **kwargs):
     prefix = LaunchConfiguration("prefix")
     use_fake_hardware = LaunchConfiguration("use_fake_hardware")
     fake_sensor_commands = LaunchConfiguration("fake_sensor_commands")
-    launch_servo = LaunchConfiguration("launch_servo")
     headless_mode = LaunchConfiguration("headless_mode")
 
     joint_limit_params = PathJoinSubstitution(
@@ -240,24 +237,6 @@ def launch_setup(context, *args, **kwargs):
         arguments=["0.0", "0.0", "0.0", "0.0", "0.0", "0.0", "world", "base_link"],
     )
 
-    # Servo node for realtime control
-    servo_yaml_ur = load_yaml("collision_detection_launch", "config/ur_servo.yaml")
-    servo_params_ur = {"moveit_servo": servo_yaml_ur}
-    servo_node_ur = Node(
-        package="moveit_servo",
-        condition=IfCondition(launch_servo),
-        executable="servo_node_main",
-        parameters=[
-            servo_params_ur,
-            robot_description_ur,
-            robot_description_semantic_ur,
-        ],
-        output={
-            "stdout": "screen",
-            "stderr": "screen",
-        },
-    )
-
     nodes_to_start = [static_tf,move_group_node,trajectory_generator_node]
 
     return nodes_to_start
@@ -361,9 +340,6 @@ def generate_launch_description():
             default_value="false",
             description="Enable headless mode for robot control",
         )
-    )
-    declared_arguments.append(
-        DeclareLaunchArgument("launch_servo", default_value="true", description="Launch Servo?")
     )
 
     return LaunchDescription(declared_arguments + [OpaqueFunction(function=launch_setup)])

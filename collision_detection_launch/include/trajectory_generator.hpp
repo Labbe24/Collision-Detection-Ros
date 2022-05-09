@@ -10,15 +10,13 @@ class TrajectoryGenerator : public rclcpp::Node{
     TrajectoryGenerator();
     void generate_trajectory(const std::shared_ptr<collision_detection_msgs::srv::GenerateTrajectory::Request> request,
         std::shared_ptr<collision_detection_msgs::srv::GenerateTrajectory::Response>      response);
-    void setupMoveServiceUR(const std::shared_ptr<std_srvs::srv::Empty::Request> request,
-        std::shared_ptr<std_srvs::srv::Empty::Response>      response){
-      setupMoveGroup("ur_manipulator");
-    }
     // trajectory_msgs::JointTrajectory generateTrajectory(const JointState& start, const JointState& end);
   private:
-    moveit::planning_interface::MoveGroupInterface setupMoveGroup(std::string);
+    moveit::planning_interface::MoveGroupInterfacePtr setupMoveGroup(std::string);
+    trajectory_msgs::msg::JointTrajectory generateTrajectory(sensor_msgs::msg::JointState a,sensor_msgs::msg::JointState b,moveit::planning_interface::MoveGroupInterfacePtr move_group);
     rclcpp::Service<collision_detection_msgs::srv::GenerateTrajectory>::SharedPtr service_;
     rclcpp::Service<collision_detection_msgs::srv::GenerateTrajectory>::SharedPtr service1_;
-
+    //Adds b to a.
+    void addTrajectories(trajectory_msgs::msg::JointTrajectory& a,trajectory_msgs::msg::JointTrajectory& b);
 
 };

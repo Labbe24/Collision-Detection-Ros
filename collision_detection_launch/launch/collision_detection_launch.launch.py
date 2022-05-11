@@ -51,7 +51,7 @@ def generate_launch_description():
             )
         ]
     )
-    trajectory_generator_ur = IncludeLaunchDescription(
+    trajectory_generator = IncludeLaunchDescription(
                 launch_description_source= PythonLaunchDescriptionSource(collision_detection_launch_dir+'/launch/trajectory_generator_ur.launch.py'),
                 launch_arguments=arguments_for_ur_moveit.items()
             )
@@ -72,10 +72,6 @@ def generate_launch_description():
     )
 
     return launch.LaunchDescription([
-        ur_nodes,
-        kuka_joint_trajectory_controller,
-        # joint_publisher_ur,
-        trajectory_generator_ur,
-        # joint_publisher_kuka,
+        trajectory_generator,
         unity_tcp_endpoint
     ])

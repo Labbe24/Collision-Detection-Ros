@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="multi-robot-setup">
+
+  <!-- robot name parameter -->
+  <xacro:arg name="name" default="multi_setup"/>
+  <!-- parameters -->
+  <xacro:arg name="prefix" default="" />
+  <xacro:include filename="$(find ur_moveit_config)/srdf/ur.srdf.xacro"/>
+  <xacro:include filename="iiwa7.srdf"/>
+  <!-- <group name="multi_setup">
+    <group name="ur_manipulator"/>
+    <group name="iiwa7_arm">
+  </group> -->
+<!-- 
+  <xacro:ur_srdf name="$(arg name)" prefix="$(arg prefix)"/> -->
+
+</robot>

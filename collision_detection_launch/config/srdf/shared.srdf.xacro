@@ -5,7 +5,8 @@
   <xacro:arg name="name" default="multi_setup"/>
   <!-- parameters -->
   <xacro:arg name="prefix" default="" />
-  <xacro:include filename="$(find ur_moveit_config)/srdf/ur.srdf.xacro"/>
+  <xacro:include filename="ur_macro.srdf.xacro"/>
+  <xacro:ur_srdf name="ur" prefix=""/>
   <xacro:include filename="iiwa7.srdf"/>
   <!-- <group name="multi_setup">
     <group name="ur_manipulator"/>

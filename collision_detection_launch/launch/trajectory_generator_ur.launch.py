@@ -193,19 +193,8 @@ def launch_setup(context, *args, **kwargs):
             moveit_controllers,
             planning_scene_monitor_parameters,
         ],
-        # arguments=['--ros-args','--log-level','debug']
     )
-
-    # Static TF
-    static_tf = Node(
-        package="tf2_ros",
-        executable="static_transform_publisher",
-        name="static_transform_publisher",
-        output="log",
-        arguments=["0.0", "0.0", "0.0", "0.0", "0.0", "0.0", "world", "base_link"],
-    )
-
-    nodes_to_start = [static_tf,move_group_node,trajectory_generator_node]
+    nodes_to_start = [move_group_node,trajectory_generator_node]
 
     return nodes_to_start
 

@@ -2,6 +2,22 @@
 
 ## Description
 
+## Run with docker
+
+Pull docker image:
+```
+docker pull jensnk/collision_detection_ros:galactic
+```
+
+Create & start docker container:
+```
+docker run --name docker_ros -it --network="host" jensnk/collision_detection_ros:galactic
+```
+
+Open terminal:
+```
+docker exec -it docker_ros bash
+```
 ## Setup
 ### Install prereqs
 ```

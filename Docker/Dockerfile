@@ -30,6 +30,18 @@ repositories: \n\
     type: git \n\
     url: https://github.com/Unity-Technologies/ROS-TCP-Endpoint.git \n\
     version: main-ros2 \n\
+  geometric_shapes: \n\
+    type: git \n\
+    url: https://github.com/ros-planning/geometric_shapes \n\
+    version: ros2 \n\
+  moveit_resources: \n\
+    type: git \n\
+    url: https://github.com/ros-planning/moveit_resources \n\
+    version: ros2 \n\
+  srdfdom: \n\
+    type: git \n\
+    url: https://github.com/ros-planning/srdfdom.git \n\
+    version: ros2 \n\
 " > ../overlay.repos
 RUN vcs import ./ < ../overlay.repos
 
@@ -50,6 +62,8 @@ WORKDIR $OVERLAY_WS
 COPY --from=cacher /tmp/$OVERLAY_WS/src ./src
 RUN . /opt/ros/$ROS_DISTRO/setup.sh && \
     apt-get update && \
+    apt-get upgrade -y && \
+    rosdep update && \
     rosdep install --ignore-src \
     --from-paths src/collision_detection \
     src/Universal_Robots_ROS2_Description \

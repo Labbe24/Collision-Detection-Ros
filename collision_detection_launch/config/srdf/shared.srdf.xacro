@@ -8,11 +8,8 @@
   <xacro:include filename="ur_macro.srdf.xacro"/>
   <xacro:ur_srdf name="ur" prefix=""/>
   <xacro:include filename="iiwa7.srdf"/>
-  <!-- <group name="multi_setup">
+  <group name="multi_setup">
     <group name="ur_manipulator"/>
-    <group name="iiwa7_arm">
-  </group> -->
-<!-- 
-  <xacro:ur_srdf name="$(arg name)" prefix="$(arg prefix)"/> -->
-
+    <group name="iiwa7_arm"/>
+  </group>
 </robot>

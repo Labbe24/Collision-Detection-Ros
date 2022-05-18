@@ -8,15 +8,39 @@ FROM $FROM_IMAGE AS cacher
 # clone overlay source
 ARG OVERLAY_WS
 WORKDIR $OVERLAY_WS/src
+
 RUN echo "\
 repositories: \n\
   collision_detection: \n\
     type: git \n\
     url: https://github.com/Labbe24/Collision-Detection-Ros.git \n\
-    version: galactic \n\
   Universal_Robots_ROS2_Description: \n\
     type: git \n\
     url: https://github.com/UniversalRobots/Universal_Robots_ROS2_Description.git \n\
+    version: ros2 \n\
+  fri: \n\
+    type: git \n\
+    url: https://github.com/KCL-BMEIS/fri \n\
+    version: ros2_hwi-dev \n\
+  lbr_fri_ros2_stack: \n\
+    type: git \n\
+    url: https://github.com/KCL-BMEIS/lbr_fri_ros2_stack \n\
+    version: galactic \n\
+  tcp_endpoint: \n\
+    type: git \n\
+    url: https://github.com/Unity-Technologies/ROS-TCP-Endpoint.git \n\
+    version: main-ros2 \n\
+  geometric_shapes: \n\
+    type: git \n\
+    url: https://github.com/ros-planning/geometric_shapes \n\
+    version: ros2 \n\
+  moveit_resources: \n\
+    type: git \n\
+    url: https://github.com/ros-planning/moveit_resources \n\
+    version: ros2 \n\
+  srdfdom: \n\
+    type: git \n\
+    url: https://github.com/ros-planning/srdfdom.git \n\
     version: ros2 \n\
 " > ../overlay.repos
 RUN vcs import ./ < ../overlay.repos
@@ -38,13 +62,19 @@ WORKDIR $OVERLAY_WS
 COPY --from=cacher /tmp/$OVERLAY_WS/src ./src
 RUN . /opt/ros/$ROS_DISTRO/setup.sh && \
     apt-get update && \
-    rosdep install --ignore-src --from-paths src -y -r \
+    apt-get upgrade -y && \
+    rosdep update && \
+    rosdep install --ignore-src \
+    --from-paths src/collision_detection \
+    src/Universal_Robots_ROS2_Description \
+    src/lbr_fri_ros2_stack/lbr_description \
+    src/tcp_endpoint -y -r \
     && rm -rf /var/lib/apt/lists/*
 
 # build overlay source
 COPY --from=cacher $OVERLAY_WS/src ./src
 RUN . /opt/ros/$ROS_DISTRO/setup.sh && \
-    colcon build \
+    colcon build --packages-select ros_tcp_endpoint collision_detection_msgs ur_description lbr_description collision_detection_launch\
     --cmake-args -DCMAKE_BUILD_TYPE=Release
 # source entrypoint setup
 ENV OVERLAY_WS $OVERLAY_WS

@@ -18,6 +18,12 @@ Open terminal:
 ```
 docker exec -it docker_ros bash
 ```
+
+### Launch nodes
+```
+source install/setup.bash
+ros2 launch collision_detection_launch collision_detection_launch.launch.py
+```
 ## Setup
 ### Install prereqs
 ```

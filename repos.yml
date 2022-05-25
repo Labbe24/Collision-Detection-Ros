@@ -1,0 +1,30 @@
+repositories:
+  Universal_Robots_ROS2_Description:
+    type: git
+    url: https://github.com/UniversalRobots/Universal_Robots_ROS2_Description.git
+    version: ros2
+  fri:
+    type: git
+    url: https://github.com/KCL-BMEIS/fri
+    version: ros2_hwi-dev
+  lbr_fri_ros2_stack:
+    type: git
+    url: https://github.com/KCL-BMEIS/lbr_fri_ros2_stack
+    version: galactic
+  tcp_endpoint:
+    type: git
+    url: https://github.com/Unity-Technologies/ROS-TCP-Endpoint.git
+    version: main-ros2
+  geometric_shapes:
+    type: git
+    url: https://github.com/ros-planning/geometric_shapes
+    version: ros2
+  moveit_resources:
+    type: git
+    url: https://github.com/ros-planning/moveit_resources
+    version: ros2
+  srdfdom:
+    type: git
+    url: https://github.com/ros-planning/srdfdom.git
+    version: ros2
+"

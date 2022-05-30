@@ -1,5 +1,5 @@
 # joint_limits.yaml allows the dynamics properties specified in the URDF to be overwritten or augmented as needed
-
+# Copied from https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver & https://github.com/KCL-BMEIS/lbr_fri_ros2_stack. Then merged to fit multi-robot setup
 # For beginners, we downscale velocity and acceleration limits.
 # You can always specify higher scaling factors (<= 1.0) in your motion requests.  # Increase the values below to 1.0 to always move at maximum speed.
 default_velocity_scaling_factor: 0.01

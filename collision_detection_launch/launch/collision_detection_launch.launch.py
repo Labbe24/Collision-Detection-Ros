@@ -24,7 +24,7 @@ def generate_launch_description():
     collision_detection_launch_dir = get_package_share_directory("collision_detection_launch")
 
     trajectory_generator = IncludeLaunchDescription(
-                launch_description_source= PythonLaunchDescriptionSource(collision_detection_launch_dir+'/launch/trajectory_generator_ur.launch.py')
+                launch_description_source= PythonLaunchDescriptionSource(collision_detection_launch_dir+'/launch/trajectory_generator.launch.py')
             )
 
 

@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://wiki.ros.org/xacro">
+<!--
+ URDF-File taken from https://github.com/UniversalRobots/Universal_Robots_ROS2_Description
+-->
   <!--
     Base UR robot series xacro macro.
 

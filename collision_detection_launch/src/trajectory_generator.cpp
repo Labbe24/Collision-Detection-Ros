@@ -42,9 +42,9 @@ JointTrajectory TrajectoryGenerator::generateTrajectory(JointState a,JointState 
     start_state.set__joint_state(a);
     move_group->setStartState(start_state);
     move_group->setJointValueTarget(b);
-    moveit::planning_interface::MoveGroupInterface::Plan robert_plant;
-    move_group->plan(robert_plant);
-    return robert_plant.trajectory_.joint_trajectory;
+    moveit::planning_interface::MoveGroupInterface::Plan plan;
+    move_group->plan(plan);
+    return plan.trajectory_.joint_trajectory;
 }
 
 void TrajectoryGenerator::addTrajectories(JointTrajectory& a,JointTrajectory& b){

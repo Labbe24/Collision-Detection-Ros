@@ -29,6 +29,7 @@ Open terminal:
 ```
 docker exec -it docker_ros bash
 ```
+Next step: Launch nodes
 
 ## Setup
 ### Install prereqs

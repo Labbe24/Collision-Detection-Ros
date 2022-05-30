@@ -1,8 +1,5 @@
-<!--
-URDF-File taken from https://github.com/UniversalRobots/Universal_Robots_ROS2_Description
--->
-
 <?xml version="1.0"?>
+<!-- URDF-File taken from https://github.com/UniversalRobots/Universal_Robots_ROS2_Description -->
 <robot xmlns:xacro="http://wiki.ros.org/xacro" name="$(arg name)">
    <!-- robot name parameter -->
    <xacro:arg name="name" default="ur"/>
